@@ -4,6 +4,6 @@
     {
         Red,
         Black,
-        Empty
+        Empty,
     }
 }

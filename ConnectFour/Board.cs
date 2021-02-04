@@ -1,149 +1,33 @@
-﻿using System;
-
-namespace ConnectFour
+﻿namespace ConnectFour
 {
     public class Board
     {
-        private const int connect = 4;
-        private const int rows = 6;
-        private const int columns = 7;
-        private readonly TokenType[,] grid;
+        public static int Rows => 6;
+        public static int Columns => 7;
+        public static TokenType[,] Grid;
 
         public Board()
         {
-            grid = new TokenType[rows, columns];
+            Grid = new TokenType[Rows, Columns];
             PopulateEmptyGrid();
         }
 
-        private void PopulateEmptyGrid()
+        private static void PopulateEmptyGrid()
         {
-            for (var row = 0; row < rows; row++)
+            for (var row = 0; row < Rows; row++)
             {
-                for (var column = 0; column < columns; column++)
+                for (var column = 0; column < Columns; column++)
                 {
-                    grid[row, column] = TokenType.Empty;
+                    Grid[row, column] = TokenType.Empty;
                 }
             }
         }
 
-        private bool CheckVertically(int row, int column, TokenType type)
+        public static bool CanAdd(int column) => Grid[0, column] == TokenType.Empty;
+
+        public static bool IsFull()
         {
-            if (row + connect >= rows)
-            {
-                return false;
-            }
-
-            for (var distance = 0; distance < connect; distance++)
-            {
-                if (grid[row + distance, column] != type)
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        private bool CheckHorizontally(int row, int column, TokenType type)
-        {
-            if (column + connect >= columns)
-            {
-                return false;
-            }
-
-            for (var distance = 0; distance < connect; distance++)
-            {
-                if (grid[row, column + distance] != type)
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        private bool CheckDiagonallyDown(int row, int column, TokenType type)
-        {
-            if (row + connect >= rows)
-            {
-                return false;
-            }
-
-            if (column + connect >= columns)
-            {
-                return false;
-            }
-
-            for (var distance = 0; distance < connect; distance++)
-            {
-                if (grid[row + distance, column + distance] != type)
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        private bool CheckDiagonallyUp(int row, int column, TokenType type)
-        {
-            if (row - connect < 0)
-            {
-                return false;
-            }
-
-            if (column + connect >= columns)
-            {
-                return false;
-            }
-
-            for (var distance = 0; distance < connect; distance++)
-            {
-                if (grid[row - distance, column + distance] != type)
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        public bool HasWon(TokenType type)
-        {
-            for (var row = 0; row < rows; row++)
-            {
-                for (var column = 0; column < columns; column++)
-                {
-                    if (CheckVertically(row, column, type))
-                    {
-                        return true;
-                    }
-
-                    if (CheckHorizontally(row, column, type))
-                    {
-                        return true;
-                    }
-
-                    if (CheckDiagonallyDown(row, column, type))
-                    {
-                        return true;
-                    }
-
-                    if (CheckDiagonallyUp(row, column, type))
-                    {
-                        return true;
-                    }
-                }
-            }
-
-            return false;
-        }
-
-        public bool CanAdd(int column) => grid[0, column] == TokenType.Empty;
-
-        public bool IsFull()
-        {
-            for (var column = 0; column < columns; column++)
+            for (var column = 0; column < Columns; column++)
             {
                 if (CanAdd(column))
                 {
@@ -154,7 +38,7 @@ namespace ConnectFour
             return true;
         }
 
-        public void Add(int column, TokenType type)
+        public static void Add(int column, TokenType type)
         {
             if (!CanAdd(column))
             {
@@ -162,46 +46,12 @@ namespace ConnectFour
             }
 
             var currenntRow = 0;
-            while (currenntRow < rows - 1 && grid[currenntRow + 1, column] == TokenType.Empty)
+            while (currenntRow < Rows - 1 && Grid[currenntRow + 1, column] == TokenType.Empty)
             {
                 currenntRow++;
             }
 
-            grid[currenntRow, column] = type;
-        }
-
-        public void DrawBoard()
-        {
-            for (var row = 0; row < rows; row++)
-            {
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.Write("■■ ");
-                for (var column = 0; column < columns; column++)
-                {
-                    TokenType type = grid[row, column];
-                    switch (type)
-                    {
-                        case TokenType.Empty:
-                            Console.ForegroundColor = ConsoleColor.Gray;
-                            Console.Write(". ");
-                            break;
-                        case TokenType.Red:
-                            Console.ForegroundColor = ConsoleColor.Red;
-                            Console.Write("O ");
-                            break;
-                        case TokenType.Black:
-                            Console.ForegroundColor = ConsoleColor.DarkGray;
-                            Console.Write("O ");
-                            break;
-                    }
-                }
-
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine("■■");
-            }
-
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine("■■■■■■■■■■■■■■■■■■■");
+            Grid[currenntRow, column] = type;
         }
     }
 }
